@@ -2,13 +2,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:trading_app/firebase_options.dart';
-import 'package:trading_app/screens/admin/add_post/add_image_post.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:trading_app/screens/splash_screen.dart';
 
 void main() async {
   // Connect with the firebase this app.
   WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Run the app
@@ -49,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: const AddImagePost(),
+      body: const SplashScreen(),
     );
   }
 }

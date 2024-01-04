@@ -12,61 +12,63 @@ class AuthScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Cryptographer'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/images/app_logo.png',
-              width: 200,
-              height: 200,
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Cryptographer is the ultimate cryptocurrency app.',
-              style: TextStyle(fontSize: 18),
-            ),
-            const Text(
-              'Get the latest news, prices, and analysis.',
-              style: TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AdminLogin(),
-                  ),
-                );
-              },
-              child: const Text('Admin Login'),
-            ),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const UserLogin(),
-                  ),
-                );
-              },
-              child: const Text('User Login'),
-            ),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const GuestMode(),
-                  ),
-                );
-              },
-              child: const Text('Guest Login'),
-            ),
-          ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.asset(
+                  'assets/images/appstore.png',
+                  width: 140,
+                  height: 140,
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Cryptographer is the ultimate cryptocurrency app. Get the latest news, prices, and analysis.',
+                style: TextStyle(fontSize: 18, color: Colors.black38),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const AdminLogin(),
+                    ),
+                  );
+                },
+                child: const Text('Admin Login'),
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const UserLogin(),
+                    ),
+                  );
+                },
+                child: const Text('User Login'),
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const GuestMode(),
+                    ),
+                  );
+                },
+                child: const Text('Guest Login'),
+              ),
+            ],
+          ),
         ),
       ),
     );
