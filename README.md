@@ -42,6 +42,34 @@
 - Tariq Mehmood
 
 ## Feedback:
-We welcome your feedback! Feel free to open an issue or contact us at [your-email@example.com].
+We welcome your feedback! Feel free to open an issue or contact us at 
 
-Happy Trading!
+
+# Admin Part - Add Post Screens:
+
+1. **Add Image Post:**
+    - File: `add_image_post.dart`
+
+2. **Add Video Post:**
+    - File: `add_video_post.dart`
+
+3. **Add YouTube Video Post:**
+    - File: `add_youtube_video_post.dart`
+
+4. **Add Voice Message Post:**
+    - File: `add_voice_message_post.dart`
+
+5. **Add File Share Post:**
+    - File: `add_file_share_post.dart`
+
+6. **Add External Link Post:**
+    - File: `add_external_link_post.dart`
+
+7. **Add CoinmarketCap Post:**
+    - File: `add_coinmarketcap_post.dart`
+
+8. **Add Article Post:**
+    - File: `add_article_post.dart`
+
+
+

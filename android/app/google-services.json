@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "124601714980",
+    "project_id": "cryptocrafter-9dc3e",
+    "storage_bucket": "cryptocrafter-9dc3e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:124601714980:android:c2fac18a1b8219d57e8bb1",
+        "android_client_info": {
+          "package_name": "com.notio.trading_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUSueFXI91EzJzEhGKKNI9XZtVLXmpIvI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
