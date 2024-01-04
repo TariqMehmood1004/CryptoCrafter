@@ -47,29 +47,29 @@ We welcome your feedback! Feel free to open an issue or contact us at
 
 # Admin Part - Add Post Screens:
 
-1. **Add Image Post:**
-    - File: `add_image_post.dart`
+- **Add Image Post:**
+    - File: `screens/admin/add_post/add_image_post.dart`
 
-2. **Add Video Post:**
-    - File: `add_video_post.dart`
+- **Add Video Post:**
+    - File: `screens/admin/add_post/add_video_post.dart`
 
-3. **Add YouTube Video Post:**
-    - File: `add_youtube_video_post.dart`
+- **Add YouTube Video Post:**
+    - File: `screens/admin/add_post/add_youtube_video_post.dart`
 
-4. **Add Voice Message Post:**
-    - File: `add_voice_message_post.dart`
+- **Add Voice Message Post:**
+    - File: `screens/admin/add_post/add_voice_message_post.dart`
 
-5. **Add File Share Post:**
-    - File: `add_file_share_post.dart`
+- **Add File Share Post:**
+    - File: `screens/admin/add_post/add_file_share_post.dart`
 
-6. **Add External Link Post:**
-    - File: `add_external_link_post.dart`
+- **Add External Link Post:**
+    - File: `screens/admin/add_post/add_external_link_post.dart`
 
-7. **Add CoinmarketCap Post:**
-    - File: `add_coinmarketcap_post.dart`
+- **Add CoinmarketCap Post:**
+    - File: `screens/admin/add_post/add_coinmarketcap_post.dart`
 
-8. **Add Article Post:**
-    - File: `add_article_post.dart`
+- **Add Article Post:**
+    - File: `screens/admin/add_post/add_article_post.dart`
 
 
 
