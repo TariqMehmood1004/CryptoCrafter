@@ -27,76 +27,81 @@ class _AddImagePostState extends State<AddImagePost> {
         title: const Text('Add Image Post'),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            Center(
-              child: GestureDetector(
-                onTap: () async {
-                  _image = await _picker.pickImage(source: ImageSource.gallery);
-                  setState(() {});
-                },
-                child: Container(
-                  width: 200,
-                  height: 200,
-                  decoration: BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.circular(10),
-                    image: _image != null
-                        ? DecorationImage(
-                            image: FileImage(File(_image!.path)),
-                            fit: BoxFit.cover,
+        physics: const BouncingScrollPhysics(),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              Center(
+                child: GestureDetector(
+                  onTap: () async {
+                    _image =
+                        await _picker.pickImage(source: ImageSource.gallery);
+                    setState(() {});
+                  },
+                  child: Container(
+                    width: 200,
+                    height: 200,
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(10),
+                      image: _image != null
+                          ? DecorationImage(
+                              image: FileImage(File(_image!.path)),
+                              fit: BoxFit.cover,
+                            )
+                          : null,
+                    ),
+                    child: _image == null
+                        ? const Icon(
+                            Icons.image,
+                            size: 50,
+                            color: Colors.white,
                           )
                         : null,
                   ),
-                  child: _image == null
-                      ? const Icon(
-                          Icons.image,
-                          size: 50,
-                          color: Colors.white,
-                        )
-                      : null,
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              decoration: const InputDecoration(
-                labelText: 'Caption',
-                border: OutlineInputBorder(),
+              const SizedBox(height: 20),
+              TextField(
+                decoration: const InputDecoration(
+                  labelText: 'Caption',
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _caption = value;
+                  });
+                },
               ),
-              onChanged: (value) {
-                setState(() {
-                  _caption = value;
-                });
-              },
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                if (_image != null && _caption != null) {
-                  // Upload image to Firebase Storage
-                  String imageUrl =
-                      await addImagePostService.uploadImage(_image!.path);
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () async {
+                  if (_image != null && _caption != null) {
+                    // Upload image to Firebase Storage
+                    String imageUrl =
+                        await addImagePostService.uploadImage(_image!.path);
 
-                  // Add post to Firestore
-                  await addImagePostService.addImagePost(
-                      imageUrl, _caption!, "Admin");
+                    // Add post to Firestore
+                    await addImagePostService.addImagePost(
+                        imageUrl, _caption!, "Admin");
 
-                  // Navigate back to home page
-                  Navigator.pop(context);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content:
-                          Text('Please select an image and enter a caption.'),
-                    ),
-                  );
-                }
-              },
-              child: const Text('Post'),
-            ),
-          ],
+                    // Navigate back to home page
+                    Navigator.pop(context);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content:
+                            Text('Please select an image and enter a caption.'),
+                      ),
+                    );
+                  }
+                },
+                child: const Text('Post'),
+              ),
+            ],
+          ),
         ),
       ),
     );
