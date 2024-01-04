@@ -80,7 +80,8 @@ class _AddImagePostState extends State<AddImagePost> {
                       await addImagePostService.uploadImage(_image!.path);
 
                   // Add post to Firestore
-                  await addImagePostService.addImagePost(imageUrl, _caption!);
+                  await addImagePostService.addImagePost(
+                      imageUrl, _caption!, "Admin");
 
                   // Navigate back to home page
                   Navigator.pop(context);
