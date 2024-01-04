@@ -40,7 +40,6 @@
 
 ## Contributors:
 - Tariq Mehmood
-- Muhammad Abdullah Wali
 
 ## Feedback:
 We welcome your feedback! Feel free to open an issue or contact us at [your-email@example.com].
