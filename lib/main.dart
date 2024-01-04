@@ -5,8 +5,8 @@ import 'package:trading_app/screens/admin/add_post/add_image_post.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
-// Connect with the firebase this app.
 
+  // Connect with the firebase this app.
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
