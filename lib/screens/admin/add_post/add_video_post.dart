@@ -1,4 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api, deprecated_member_use, prefer_final_fields
+// ignore_for_file: library_private_types_in_public_api, deprecated_member_use, prefer_final_fields, unnecessary_null_comparison
 
 import 'dart:developer';
 
@@ -7,7 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:trading_app/Models/VideoModel.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:trading_app/screens/admin/add_post/views/show_video_post.dart';
+import 'package:trading_app/utils/navigator.dart';
 
 class AddVideoPost extends StatefulWidget {
   const AddVideoPost({Key? key}) : super(key: key);
@@ -109,87 +110,44 @@ class _AddVideoPostState extends State<AddVideoPost> {
       appBar: AppBar(
         title: const Text('Add Video Post'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: captionController,
-              decoration: const InputDecoration(labelText: 'Caption'),
-            ),
-            const SizedBox(height: 16.0),
-            TextField(
-              controller: referenceController,
-              decoration: const InputDecoration(labelText: 'Reference'),
-            ),
-            const SizedBox(height: 16.0),
-            TextField(
-              controller: videoLinkController,
-              decoration:
-                  const InputDecoration(labelText: 'Video YouTube Link'),
-            ),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: _addVideoPost,
-              child: const Text('Add Video Post'),
-            ),
-            const SizedBox(height: 10),
-            _userPosts.isNotEmpty
-                ? Expanded(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: _userPosts.length,
-                      itemBuilder: (context, index) {
-                        VideoPost post = _userPosts[index];
-                        return Card(
-                          child: ListTile(
-                            title: Text(
-                              getLimitedWords(post.caption, 10),
-                              style: const TextStyle(
-                                fontSize: 15.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            subtitle: Text(
-                              'Posted on ${post.createdAt.toLocal()}',
-                              style: const TextStyle(
-                                color: Colors.grey,
-                              ),
-                            ),
-                            trailing: ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: YoutubePlayer(
-                                controller: YoutubePlayerController(
-                                  initialVideoId:
-                                      _getVideoId(post.videoYoutubeLink),
-                                  flags: const YoutubePlayerFlags(
-                                    autoPlay: false,
-                                    mute: false,
-                                  ),
-                                ),
-                                showVideoProgressIndicator: true,
-                              ),
-                            ),
-                            onTap: () async {
-                              // pushToScreen(
-                              //     context, ShowImagePost(imagePost: post));
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                  )
-                : const Text('No posts yet.'),
-          ],
+      body: Expanded(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
+          child: Column(
+            children: [
+              TextField(
+                controller: captionController,
+                decoration: const InputDecoration(labelText: 'Caption'),
+              ),
+              const SizedBox(height: 16.0),
+              TextField(
+                controller: referenceController,
+                decoration: const InputDecoration(labelText: 'Reference'),
+              ),
+              const SizedBox(height: 16.0),
+              TextField(
+                controller: videoLinkController,
+                decoration:
+                    const InputDecoration(labelText: 'Video YouTube Link'),
+              ),
+              const SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: _addVideoPost,
+                child: const Text('Add Video Post'),
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () {
+                  pushToScreen(
+                      context, ShowAllVideoPosts(videoPosts: _userPosts));
+                },
+                child: const Text('Show Video Post'),
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
         ),
       ),
     );
-  }
-
-  String _getVideoId(String? youtubeUrl) {
-    if (youtubeUrl == null) {
-      return '';
-    }
-    return YoutubePlayer.convertUrlToId(youtubeUrl) ?? '';
   }
 }
