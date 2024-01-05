@@ -113,7 +113,7 @@ class _AdminRegistrationScreenState extends State<AdminRegistrationScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const AdminHomeScreen(),
+                              builder: (context) => AdminHomeScreen(),
                             ));
                       } on FirebaseAuthException catch (e) {
                         print('Firebase Auth Error: ${e.code} - ${e.message}');

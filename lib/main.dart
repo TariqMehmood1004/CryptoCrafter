@@ -1,16 +1,14 @@
-// ignore_for_file: depend_on_referenced_packages
-
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:trading_app/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:trading_app/screens/admin/home_screen/admin_home_screen.dart';
+import 'package:trading_app/screens/admin_login.dart';
 import 'package:trading_app/screens/splash_screen.dart';
 
 void main() async {
-  // Connect with the firebase this app.
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  // Run the app
   runApp(const MyApp());
 }
 
@@ -20,13 +18,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Trading',
+      title: 'CryptoCraft',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Trading'),
+      home: const MyHomePage(title: 'CryptoCraft'),
     );
   }
 }
@@ -41,6 +39,38 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  User? _user;
+  bool _isAdminLoggedIn = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _auth.authStateChanges().listen((User? user) {
+      _user = user;
+      if (_user != null) {
+        _isAdminLoggedIn = true;
+      } else {
+        _isAdminLoggedIn = false;
+      }
+      navigateToScreen();
+    });
+  }
+
+  void navigateToScreen() {
+    if (_isAdminLoggedIn) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => AdminHomeScreen()),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const AdminLogin()),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

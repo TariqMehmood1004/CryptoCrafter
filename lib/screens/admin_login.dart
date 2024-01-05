@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:trading_app/screens/admin/home_screen/admin_home_screen.dart';
 import 'package:trading_app/screens/registeration_screen.dart';
 
 class AdminLogin extends StatefulWidget {
@@ -15,6 +16,7 @@ class _AdminLoginState extends State<AdminLogin> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _loading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -71,36 +73,54 @@ class _AdminLoginState extends State<AdminLogin> {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      try {
-                        await FirebaseAuth.instance.signInWithEmailAndPassword(
-                          email: _emailController.text,
-                          password: _passwordController.text,
-                        );
+                  onPressed: _loading
+                      ? null
+                      : () async {
+                          if (_formKey.currentState!.validate()) {
+                            setState(() {
+                              _loading = true;
+                            });
+                            try {
+                              await FirebaseAuth.instance
+                                  .signInWithEmailAndPassword(
+                                email: _emailController.text,
+                                password: _passwordController.text,
+                              );
 
-                        // Navigate to admin home screen
-                        Navigator.pushNamed(context, '/admin_home');
-                      } on FirebaseAuthException catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(e.message!),
-                          ),
-                        );
-                      }
-                    }
-                  },
-                  child: const Text('Login'),
+                              // Navigate to admin home screen
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => AdminHomeScreen(),
+                                ),
+                              );
+                            } on FirebaseAuthException catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(e.message!),
+                                ),
+                              );
+                            } finally {
+                              setState(() {
+                                _loading = false;
+                              });
+                            }
+                          }
+                        },
+                  child: _loading
+                      ? const CircularProgressIndicator()
+                      : const Text('Login'),
                 ),
                 TextButton(
                   onPressed: () {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const AdminRegistrationScreen(),
-                        ));
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AdminRegistrationScreen(),
+                      ),
+                    );
                   },
-                  child: const Text("Have not account? Register"),
+                  child: const Text("Don't have an account? Register"),
                 ),
               ],
             ),
