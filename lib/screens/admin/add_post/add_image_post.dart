@@ -1,15 +1,17 @@
-// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously, unused_field
+// ignore_for_file: unused_field, use_build_context_synchronously
 
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:trading_app/firebase_services/add_image_post.dart';
 
 class AddImagePost extends StatefulWidget {
   const AddImagePost({super.key});
 
   @override
-  _AddImagePostState createState() => _AddImagePostState();
+  State<AddImagePost> createState() => _AddImagePostState();
 }
 
 class _AddImagePostState extends State<AddImagePost> {
@@ -18,7 +20,24 @@ class _AddImagePostState extends State<AddImagePost> {
   String? _imageUrl;
   String? _caption;
 
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  User? _user;
+  String _userId = '';
+
   AddImagePostService addImagePostService = AddImagePostService();
+
+  @override
+  void initState() {
+    super.initState();
+    _auth.authStateChanges().listen((User? user) {
+      setState(() {
+        _user = user;
+        if (_user != null) {
+          _userId = _user!.uid;
+        }
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,8 +103,16 @@ class _AddImagePostState extends State<AddImagePost> {
                         await addImagePostService.uploadImage(_image!.path);
 
                     // Add post to Firestore
-                    await addImagePostService.addImagePost(
-                        imageUrl, _caption!, "Admin");
+                    ImagePost post = ImagePost(
+                      imageUrl: imageUrl,
+                      caption: _caption,
+                      uploadedBy:
+                          _userId, // Set uploadedBy to the logged-in user ID
+                      isAdminPosted:
+                          false, // Set isAdminPosted to false for non-Admin posts
+                      createdAt: Timestamp.now(),
+                    );
+                    await addImagePostService.addImagePost(post);
 
                     // Navigate back to home page
                     Navigator.pop(context);

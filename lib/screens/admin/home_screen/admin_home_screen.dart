@@ -3,6 +3,13 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:trading_app/screens/admin/add_post/add_article_post.dart';
+import 'package:trading_app/screens/admin/add_post/add_coinmarketcap_post.dart';
+import 'package:trading_app/screens/admin/add_post/add_external_link_post.dart';
+import 'package:trading_app/screens/admin/add_post/add_image_post.dart';
+import 'package:trading_app/screens/admin/add_post/add_video_post.dart';
+import 'package:trading_app/screens/admin/add_post/add_voice_message_post.dart';
+import 'package:trading_app/utils/navigator.dart';
 
 class AdminHomeScreen extends StatelessWidget {
   @override
@@ -24,6 +31,7 @@ class AdminHomeScreen extends StatelessWidget {
                 "https://techcrunch.com/wp-content/uploads/2022/11/postnews.jpg",
                 onTap: () {
               log('Post with Image clicked');
+              pushToScreen(context, const AddImagePost());
             }),
             buildPostCard(
                 'Post with Video',
@@ -31,6 +39,7 @@ class AdminHomeScreen extends StatelessWidget {
                 'https://images.pexels.com/photos/5650141/pexels-photo-5650141.jpeg?auto=compress&cs=tinysrgb&w=600',
                 onTap: () {
               log('Post with Video clicked');
+              pushToScreen(context, const AddVideoPost());
             }),
             buildPostCard(
                 'Post with Voice Message',
@@ -38,13 +47,7 @@ class AdminHomeScreen extends StatelessWidget {
                 "https://images.pexels.com/photos/5939401/pexels-photo-5939401.jpeg?auto=compress&cs=tinysrgb&w=600",
                 onTap: () {
               log('Post with Voice Message clicked');
-            }),
-            buildPostCard(
-                'Post with Multiple URLs',
-                'Description of the post with multiple URLs.',
-                "https://images.unsplash.com/photo-1584714268709-c3dd9c92b378?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fFVybHN8ZW58MHx8MHx8fDA%3D",
-                onTap: () {
-              log('Post with Multiple URLs clicked');
+              pushToScreen(context, const AddVoiceMessagePost());
             }),
             buildPostCardWithExternalLink(
                 'Post with External Link',
@@ -52,12 +55,14 @@ class AdminHomeScreen extends StatelessWidget {
                 'https://images.unsplash.com/photo-1584714268709-c3dd9c92b378?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fFVybHN8ZW58MHx8MHx8fDA%3D',
                 onTap: () {
               log('Post with External Link clicked');
+              pushToScreen(context, const AddExternalLinksPost());
             }),
             buildPostCardWithExternalLink(
                 'Post with CoinmarketCap Integration',
                 'Description of the post with CoinmarketCap integration.',
                 'https://coinmarketcap.com/', onTap: () {
               log('Post with CoinmarketCap Integration clicked');
+              pushToScreen(context, const AddCoinMarketCapPost());
             }),
             buildPostCardWithExternalLink(
                 'Post with Shared Article',
@@ -65,6 +70,7 @@ class AdminHomeScreen extends StatelessWidget {
                 'https://coinmarketcap.com/community/articles/65851c7a76f2e4352192b5cf/',
                 onTap: () {
               log('Post with Shared Article clicked');
+              pushToScreen(context, const AddArticlePost());
             }),
           ],
         ),
