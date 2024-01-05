@@ -9,12 +9,16 @@ class VideoPost {
   String caption;
   String reference;
   String videoYoutubeLink;
+  String uploadedBy;
+  DateTime createdAt;
 
   VideoPost({
     required this.postId,
     required this.caption,
     required this.reference,
     required this.videoYoutubeLink,
+    required this.uploadedBy,
+    required this.createdAt,
   });
 
   Map<String, dynamic> toMap() {
@@ -23,6 +27,8 @@ class VideoPost {
       'caption': caption,
       'reference': reference,
       'videoYoutubeLink': videoYoutubeLink,
+      'uploadedBy': uploadedBy,
+      'createdAt': createdAt,
     };
   }
 
@@ -32,6 +38,8 @@ class VideoPost {
       caption: map['caption'] ?? '',
       reference: map['reference'] ?? '',
       videoYoutubeLink: map['videoYoutubeLink'] ?? '',
+      uploadedBy: map['uploadedBy'] ?? '',
+      createdAt: (map['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
   }
 
@@ -41,7 +49,7 @@ class VideoPost {
       final QuerySnapshot<Map<String, dynamic>> snapshot =
           await FirebaseFirestore.instance
               .collection('videoPosts')
-              .where('userId', isEqualTo: userId)
+              .where('uploadedBy', isEqualTo: userId)
               .get();
 
       return snapshot.docs.map((doc) => VideoPost.fromMap(doc.data())).toList();

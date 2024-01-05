@@ -5,7 +5,8 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:trading_app/Models/AdminModel.dart';
+import 'package:trading_app/Models/VideoModel.dart';
 
 class AddVideoPost extends StatefulWidget {
   const AddVideoPost({Key? key}) : super(key: key);
@@ -18,10 +19,6 @@ class _AddVideoPostState extends State<AddVideoPost> {
   final TextEditingController captionController = TextEditingController();
   final TextEditingController referenceController = TextEditingController();
   final TextEditingController videoLinkController = TextEditingController();
-
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  User? _user;
-  String _userId = '';
 
   void _addVideoPost() async {
     try {
@@ -37,7 +34,7 @@ class _AddVideoPostState extends State<AddVideoPost> {
         'caption': captionController.text,
         'reference': referenceController.text,
         'videoYoutubeLink': videoLinkController.text,
-        'uploadedBy': _userId,
+        'uploadedBy': 'loggedInUserId', // Replace with actual user ID
         'createdAt': FieldValue.serverTimestamp(),
       });
 
@@ -51,7 +48,7 @@ class _AddVideoPostState extends State<AddVideoPost> {
         'caption': captionController.text,
         'reference': referenceController.text,
         'videoYoutubeLink': videoLinkController.text,
-        'uploadedBy': _userId,
+        'uploadedBy': 'loggedInUserId', // Replace with actual user ID
         'createdAt': ServerValue.timestamp,
       });
 
@@ -66,19 +63,6 @@ class _AddVideoPostState extends State<AddVideoPost> {
       // Handle errors appropriately (e.g., show an error message)
       log('Error adding video post: $error');
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _auth.authStateChanges().listen((User? user) {
-      setState(() {
-        _user = user;
-        if (_user != null) {
-          _userId = _user!.uid;
-        }
-      });
-    });
   }
 
   @override
@@ -111,6 +95,124 @@ class _AddVideoPostState extends State<AddVideoPost> {
             ElevatedButton(
               onPressed: _addVideoPost,
               child: const Text('Add Video Post'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class VideoPostList extends StatelessWidget {
+  const VideoPostList({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Video Posts'),
+      ),
+      body: FutureBuilder(
+        future: VideoPost.getVideoPosts('loggedInUserId'),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            List<VideoPost> videoPosts = snapshot.data as List<VideoPost>;
+            return ListView.builder(
+              itemCount: videoPosts.length,
+              itemBuilder: (context, index) {
+                VideoPost videoPost = videoPosts[index];
+                return ListTile(
+                  title: Text(videoPost.caption),
+                  subtitle: Text(videoPost.reference),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.play_arrow),
+                    onPressed: () {
+                      // Open the video player with the videoPost.videoYoutubeLink
+                    },
+                  ),
+                );
+              },
+            );
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
+    );
+  }
+}
+
+class ShowVideoPost extends StatelessWidget {
+  final VideoPost videoPost;
+
+  const ShowVideoPost({Key? key, required this.videoPost}) : super(key: key);
+
+  String getFirstThreeWords(String text) {
+    List<String> words = text.split(' ');
+    return words.length >= 3 ? '${words[0]} ${words[1]} ${words[2]}' : text;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        foregroundColor: Colors.black,
+        title: Text(
+          getFirstThreeWords(videoPost.caption),
+          textAlign: TextAlign.center,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          softWrap: false,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+      ),
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            const SizedBox(height: 20),
+            Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  videoPost.reference,
+                  fit: BoxFit.cover,
+                  height: 300,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              videoPost.caption,
+              style: const TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.normal,
+                color: Colors.black87,
+                height: 1.5,
+                letterSpacing: 0.5,
+                wordSpacing: 0.5,
+                textBaseline: TextBaseline.alphabetic,
+              ),
+            ),
+            const SizedBox(height: 2.0),
+            FutureBuilder(
+              future: FirebaseFirestore.instance
+                  .collection('admins')
+                  .doc(videoPost.uploadedBy)
+                  .get(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  AdminModel admin = AdminModel.fromMap(snapshot.data!.data()!);
+                  return Text(
+                      'Posted by ${admin.displayName} on ${videoPost.createdAt.toLocal().toIso8601String()}');
+                } else {
+                  return const Text('Loading...');
+                }
+              },
             ),
           ],
         ),
