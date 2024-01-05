@@ -1,8 +1,9 @@
 // ignore_for_file: file_names
 
-import 'dart:developer';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class VideoPost {
   String postId;
@@ -42,20 +43,46 @@ class VideoPost {
       createdAt: (map['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
   }
+}
 
-  static Future<List<VideoPost>> getVideoPosts(String userId) async {
-    try {
-      // Assuming you are using Firestore as the database
-      final QuerySnapshot<Map<String, dynamic>> snapshot =
-          await FirebaseFirestore.instance
-              .collection('videoPosts')
-              .where('uploadedBy', isEqualTo: userId)
-              .get();
+class VideoPostService {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
 
-      return snapshot.docs.map((doc) => VideoPost.fromMap(doc.data())).toList();
-    } catch (error) {
-      log('Error fetching video posts: $error');
-      return [];
-    }
+  Future<String> uploadVideo(String filePath) async {
+    Reference ref = _storage
+        .ref()
+        .child('videoPosts/videos/${DateTime.now().millisecondsSinceEpoch}');
+    UploadTask uploadTask = ref.putFile(File(filePath));
+    TaskSnapshot taskSnapshot = await uploadTask;
+    String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+    return downloadUrl;
+  }
+
+  Future<void> addVideoPost(VideoPost post) async {
+    CollectionReference videoPosts = _firestore.collection('videoPosts');
+    DocumentReference documentReference = await videoPosts.add(post.toMap());
+
+    // Update the post ID
+    post.postId = documentReference.id;
+    await documentReference.update({'postId': post.postId});
+  }
+
+  Future<List<VideoPost>> getUserVideoPosts(String userId) async {
+    CollectionReference videoPosts = _firestore.collection('videoPosts');
+    QuerySnapshot querySnapshot =
+        await videoPosts.where('uploadedBy', isEqualTo: userId).get();
+    List<VideoPost> posts = querySnapshot.docs
+        .map((doc) => VideoPost.fromMap(doc.data() as Map<String, dynamic>))
+        .toList();
+    return posts;
+  }
+
+  Future<VideoPost> getVideoPostById(String postId) async {
+    CollectionReference videoPosts = _firestore.collection('videoPosts');
+    DocumentSnapshot documentSnapshot = await videoPosts.doc(postId).get();
+    VideoPost post =
+        VideoPost.fromMap(documentSnapshot.data() as Map<String, dynamic>);
+    return post;
   }
 }

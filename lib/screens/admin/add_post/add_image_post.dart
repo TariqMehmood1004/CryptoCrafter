@@ -140,8 +140,6 @@ class _AddImagePostState extends State<AddImagePost> {
               const SizedBox(height: 10),
               _userPosts.isNotEmpty
                   ? ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: _userPosts.length,
                       itemBuilder: (context, index) {
                         ImagePost post = _userPosts[index];
