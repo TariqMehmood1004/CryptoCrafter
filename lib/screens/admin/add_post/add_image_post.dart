@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:trading_app/firebase_services/add_image_post.dart';
 import 'package:trading_app/screens/admin/add_post/views/show_image_post.dart';
+import 'package:trading_app/utils/navigator.dart';
 
 class AddImagePost extends StatefulWidget {
   const AddImagePost({super.key});
@@ -48,6 +49,13 @@ class _AddImagePostState extends State<AddImagePost> {
     setState(() {});
   }
 
+  String getLimitedWords(String text, int lengthWords) {
+    List<String> words = text.split(' ');
+    return words.length >= lengthWords
+        ? words.take(lengthWords).join(' ')
+        : text;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,8 +77,8 @@ class _AddImagePostState extends State<AddImagePost> {
                     setState(() {});
                   },
                   child: Container(
-                    width: 200,
-                    height: 200,
+                    width: 120,
+                    height: 120,
                     decoration: BoxDecoration(
                       color: Colors.grey,
                       borderRadius: BorderRadius.circular(10),
@@ -92,20 +100,21 @@ class _AddImagePostState extends State<AddImagePost> {
                 ),
               ),
               const SizedBox(height: 20),
-              TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Caption',
-                  border: OutlineInputBorder(),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  decoration: const InputDecoration(
+                    labelText: 'Caption',
+                    border: OutlineInputBorder(),
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      _caption = value;
+                    });
+                  },
+                  keyboardType: TextInputType.multiline,
+                  textInputAction: TextInputAction.done,
                 ),
-                onChanged: (value) {
-                  setState(() {
-                    _caption = value;
-                  });
-                },
-                maxLines: 3,
-                maxLength: 300,
-                keyboardType: TextInputType.multiline,
-                textInputAction: TextInputAction.done,
               ),
               const SizedBox(height: 20),
               myButtonWidget(
@@ -115,8 +124,19 @@ class _AddImagePostState extends State<AddImagePost> {
                 userId: _userId,
               ),
               const SizedBox(height: 20),
-              Text('Your Posts:',
-                  style: Theme.of(context).textTheme.bodyMedium),
+              const Row(
+                children: [
+                  Text(
+                    'Your Posts:',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontFamily: 'Lobster',
+                    ),
+                  ),
+                ],
+              ),
               const SizedBox(height: 10),
               _userPosts.isNotEmpty
                   ? ListView.builder(
@@ -127,23 +147,31 @@ class _AddImagePostState extends State<AddImagePost> {
                         ImagePost post = _userPosts[index];
                         return Card(
                           child: ListTile(
-                            title: Text(post.caption ?? ''),
-                            subtitle:
-                                Text('Posted on ${post.createdAt!.toDate()}'),
-                            trailing: Image.network(post.imageUrl ?? ''),
+                            title: Text(
+                              getLimitedWords(post.caption ?? '', 10),
+                              style: const TextStyle(
+                                fontSize: 15.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            subtitle: Text(
+                              'Posted on ${post.createdAt!.toDate()}',
+                              style: const TextStyle(
+                                color: Colors.grey,
+                              ),
+                            ),
+                            trailing: ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Image.network(
+                                post.imageUrl ?? '',
+                                width: 120,
+                                height: 120,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                             onTap: () async {
-                              // Get image post by ID
-                              ImagePost detailedPost = await addImagePostService
-                                  .getImagePostById(post.id ?? '');
-
-                              // Navigate to ShowImagePost screen
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      ShowImagePost(imagePost: detailedPost),
-                                ),
-                              );
+                              pushToScreen(
+                                  context, ShowImagePost(imagePost: post));
                             },
                           ),
                         );

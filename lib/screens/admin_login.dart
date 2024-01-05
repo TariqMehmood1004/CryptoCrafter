@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:trading_app/screens/admin/home_screen/admin_home_screen.dart';
-import 'package:trading_app/screens/registeration_screen.dart';
 
 class AdminLogin extends StatefulWidget {
   const AdminLogin({super.key});
