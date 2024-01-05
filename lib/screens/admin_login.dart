@@ -111,17 +111,17 @@ class _AdminLoginState extends State<AdminLogin> {
                       ? const CircularProgressIndicator()
                       : const Text('Login'),
                 ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const AdminRegistrationScreen(),
-                      ),
-                    );
-                  },
-                  child: const Text("Don't have an account? Register"),
-                ),
+                // TextButton(
+                //   onPressed: () {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //         builder: (context) => const AdminRegistrationScreen(),
+                //       ),
+                //     );
+                //   },
+                //   child: const Text("Don't have an account? Register"),
+                // ),
               ],
             ),
           ),

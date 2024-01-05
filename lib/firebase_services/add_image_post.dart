@@ -1,9 +1,12 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class ImagePost {
+  String? id;
   String? imageUrl;
   String? caption;
   String? uploadedBy;
@@ -11,6 +14,7 @@ class ImagePost {
   Timestamp? createdAt;
 
   ImagePost({
+    this.id,
     this.imageUrl,
     this.caption,
     this.uploadedBy,
@@ -27,6 +31,7 @@ class ImagePost {
       };
 
   static ImagePost fromJson(Map<String, dynamic> json) => ImagePost(
+        id: json['id'],
         imageUrl: json['imageUrl'],
         caption: json['caption'],
         uploadedBy: json['uploadedBy'],
@@ -51,6 +56,28 @@ class AddImagePostService {
 
   Future<void> addImagePost(ImagePost post) async {
     CollectionReference posts = _firestore.collection('posts');
-    await posts.add(post.toJson());
+    DocumentReference documentReference = await posts.add(post.toJson());
+
+    // Update the post ID
+    post.id = documentReference.id;
+    await documentReference.update({'id': post.id});
+  }
+
+  Future<List<ImagePost>> getUserImagePosts(String userId) async {
+    CollectionReference posts = _firestore.collection('posts');
+    QuerySnapshot querySnapshot =
+        await posts.where('uploadedBy', isEqualTo: userId).get();
+    List<ImagePost> post = querySnapshot.docs
+        .map((doc) => ImagePost.fromJson(doc.data() as Map<String, dynamic>))
+        .toList();
+    return post;
+  }
+
+  Future<ImagePost> getImagePostById(String postId) async {
+    CollectionReference posts = _firestore.collection('posts');
+    DocumentSnapshot documentSnapshot = await posts.doc(postId).get();
+    ImagePost post =
+        ImagePost.fromJson(documentSnapshot.data() as Map<String, dynamic>);
+    return post;
   }
 }
